@@ -40,7 +40,7 @@ const registerUser = asyncHandler( async (req, res) => {
     //console.log("email: ", email);
 
     if (
-        [name, phoneno,password,password].some((field) => field?.trim() === "")
+        [name, phoneno,password].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required")
     }
@@ -67,7 +67,6 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Avatar file is required")
     }
    
-
     const user = await User.create({
         name,
         avatar: avatar.url,
