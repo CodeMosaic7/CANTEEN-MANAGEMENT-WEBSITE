@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const rewardSchema = new mongoose.Schema(
-    {
-    
-    },{
-    timestamps:true
-})
+  {},
+  {
+    timestamps: true,
+  }
+);
 
-export const Reward=mongoose.model("reward",userSchema)
+export const Reward = mongoose.model("Reward", userSchema);

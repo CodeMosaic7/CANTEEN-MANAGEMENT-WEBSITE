@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(
-    {
-    
-    },{
-    timestamps:true
-})
+  {},
+  {
+    timestamps: true,
+  }
+);
 
-export const Payment=mongoose.model("product",userSchema)
+export const Payment = mongoose.model("Payement", paymentSchema);

@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function Register() {
   const {
@@ -7,9 +9,23 @@ export default function Register() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Registered Data:", data);
-    alert("Registration Successful!");
+  const onSubmit = async (data) => {
+    // e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/register",
+        data
+      );
+      console.log(response.data);
+      if (response.status === 201) {
+        alert("Registration Successful!");
+      } else {
+        alert("Registration Failed!");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Registration Failed!");
+    }
   };
 
   return (
@@ -28,7 +44,20 @@ export default function Register() {
               {...register("name", { required: "Name is required" })}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-gray-600">Phone No.</label>
+            <input
+              type="text"
+              {...register("phoneno", { required: "Phone no. is required" })}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
           </div>
 
           {/* Email */}
@@ -38,11 +67,33 @@ export default function Register() {
               type="email"
               {...register("email", {
                 required: "Email is required",
-                pattern: { value: /^\S+@\S+$/i, message: "Invalid email format" },
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Invalid email format",
+                },
               })}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
+          </div>
+
+          {/* Role */}
+          <div>
+            <label className="block text-gray-600">Role</label>
+            <select
+              {...register("role", { required: "Role is required" })}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Role</option>
+              <option value="customer">customer</option>
+              <option value="manager">manager</option>
+              <option value="admin">admin</option>
+            </select>
+            {errors.role && (
+              <p className="text-red-500 text-sm">{errors.role.message}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -50,10 +101,18 @@ export default function Register() {
             <label className="block text-gray-600">Password</label>
             <input
               type="password"
-              {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
           </div>
 
           {/* Confirm Password */}
@@ -61,21 +120,33 @@ export default function Register() {
             <label className="block text-gray-600">Confirm Password</label>
             <input
               type="password"
-              {...register("confirmPassword", { required: "Confirm Password is required" })}
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+              })}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          >
             Register
           </button>
         </form>
 
         {/* Already have an account? */}
         <p className="text-center text-gray-600 text-sm mt-4">
-          Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a>
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-600 hover:underline">
+            Login
+          </a>
         </p>
       </div>
     </div>

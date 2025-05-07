@@ -1,3 +1,5 @@
+// Description: This is a template for a .gitignore file that can be used in various projects.
+todo.txt
 ### Node ###
 # Logs
 logs

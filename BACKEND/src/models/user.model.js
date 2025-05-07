@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema(
       default: "customer",
     },
     rewards: {
-      type: Number,//calculate rewards based on the amount of orders
+      type: Number, //calculate rewards based on the amount of orders
       default: 0,
     },
     avatar: {
@@ -34,7 +35,7 @@ const userSchema = new mongoose.Schema(
     },
     orderHistory: [
       {
-        types: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Order",
       },
     ],
@@ -69,7 +70,7 @@ userSchema.methods.generateAccessToken = function () {
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
     }
   );
 };
@@ -80,7 +81,7 @@ userSchema.methods.generateRefreshToken = function () {
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
     }
   );
 };
