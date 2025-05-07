@@ -27,12 +27,14 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center mb-4">Log In</h2>
+    <div className="w-full h-screen flex justify-center items-center bg-gray-100 text-white">
+      <div className="bg-orange-500 text-white text-2xl p-8 rounded-lg shadow-lg w-96">
+        <h2 className="text-2xl font-bold text-center mb-4 text-white">
+          Log In
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700">
+            <label className="block text-sm font-semibold text-white">
               Email
             </label>
             <input
@@ -45,7 +47,7 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700">
+            <label className="block text-sm font-semibold text-white">
               Password
             </label>
             <input
