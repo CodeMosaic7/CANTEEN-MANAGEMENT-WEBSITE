@@ -60,7 +60,7 @@ export default function Register() {
             )}
           </div>
 
-          {/* Email */}
+          {/* Email
           <div>
             <label className="block text-gray-600">Email</label>
             <input
@@ -77,7 +77,7 @@ export default function Register() {
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Role */}
           <div>

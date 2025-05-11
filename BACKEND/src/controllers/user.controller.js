@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
-    console.log("user: ", user);
+    // console.log("user: ", user);
     if (!user) {
       throw new ApiError(404, "User not found");
     }
@@ -96,12 +96,12 @@ const loginUser = asyncHandler(async (req, res) => {
   //password check
   //access and referesh token
   //send cookie
-  console.log(req.body);
-  const { phoneno, username, password } = req.body;
-  console.log(phoneno, username, password);
+  // console.log(req.body);
+  const { phoneno, password } = req.body;
+  console.log(phoneno, password);
 
-  if (!username) {
-    throw new ApiError(400, "username or email is required");
+  if (!phoneno) {
+    throw new ApiError(400, "Phone No. is required");
   }
 
   // if (!(username || email)) {
@@ -110,7 +110,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // }
 
   const user = await User.findOne({
-    $or: [{ username }, { phoneno }],
+    $or: [{ phoneno }],
   });
 
   if (!user) {
@@ -123,7 +123,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid user credentials");
   }
 
-  const { accessToken, refreshToken } = generateAccessAndRefereshTokens(
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
     user._id
   );
   console.log("accessToken: ", accessToken);

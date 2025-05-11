@@ -1,28 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [phoneno, setPhoneno] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation
-    if (!email || !password) {
+    if (!phoneno || !password) {
       setError("Please fill in all fields");
       return;
     }
 
-    // Simulate login logic (you can replace this with actual authentication logic)
-    if (email === "user@example.com" && password === "password123") {
-      setError(""); // Clear error if login is successful
-      navigate("/"); // Redirect to the dashboard or home page after successful login
-    } else {
-      setError("Invalid credentials, please try again.");
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/login",
+        {
+          phoneno,
+          password,
+        }
+        // { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setError(""); // Clear error if login is successful
+        navigate("/"); // Redirect to the dashboard or home page after successful login
+      } else {
+        setError("Invalid credentials, please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An error occurred during login. Please try again.");
     }
   };
 
@@ -35,14 +48,14 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-semibold text-white">
-              Email
+              Phone No.
             </label>
             <input
-              type="email"
+              type="tel"
               className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phoneno}
+              onChange={(e) => setPhoneno(e.target.value)}
             />
           </div>
 
