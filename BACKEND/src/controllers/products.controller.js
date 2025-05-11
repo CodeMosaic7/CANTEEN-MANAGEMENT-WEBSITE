@@ -1,5 +1,5 @@
-import { Product } from "../models/product.model";
-import { asyncHandler } from "../utils/asyncHandler";
+import { Product } from "../models/product.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   if (req.user.role !== "admin" || req.user.role !== "manager") {
@@ -39,30 +39,29 @@ const addProduct = asyncHandler(async (req, res) => {
 });
 
 const getProducts = asyncHandler(async (req, res) => {
-    
-    const product=await Product.findById(req.params.id)
-    if(!product){
-        res.status(404)
-        throw new Error("Product not found")
-    };
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
 
-    res.status(200).json(product)
+  res.status(200).json(product);
 });
 
 const removeProduct = asyncHandler(async (req, res) => {
-    if (!req.user.role === "admin" || req.user.role !== "manager") {
-      res.status(401);
-      throw new Error("Not authorized");
-    }
-    const product = await Product.findByIdAndDelete(req.params.id);
-    if (!product) {
-      res.status(404);
-      throw new Error("Product not found");
-    }
-    res.status(200).json({
-      success: true,
-      message: "Product deleted successfully",
-    });
+  if (!req.user.role === "admin" || req.user.role !== "manager") {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  const product = await Product.findByIdAndDelete(req.params.id);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+  });
 });
 
 export { addProduct, getProducts, removeProduct };
