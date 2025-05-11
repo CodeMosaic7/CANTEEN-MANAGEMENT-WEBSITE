@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { upload } from "../middlewares/multer.middleware.js";
 import {
   addProduct,
   getProducts,
@@ -11,7 +11,12 @@ const router = Router();
 
 router
   .route("/addProduct")
-  .post(verifyJWT, authorizeRoles("admin", "manager"), addProduct);
+  .post(
+    verifyJWT,
+    authorizeRoles("admin", "manager"),
+    upload.array("images", 5),
+    addProduct
+  );
 router.route("/getProducts").post(verifyJWT, getProducts);
 router
   .route("/removeProduct/:id")

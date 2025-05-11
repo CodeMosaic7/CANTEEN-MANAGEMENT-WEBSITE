@@ -1,8 +1,8 @@
 import { Product } from "../models/product.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 const addProduct = asyncHandler(async (req, res) => {
-  if (req.user.role !== "admin" || req.user.role !== "manager") {
+  if (req.user.role === "admin" || req.user.role === "manager") {
     res.status(401);
     throw new Error("Not authorized");
   }
@@ -27,6 +27,16 @@ const addProduct = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please fill all the fields");
   }
+
+  const uploadedImages = [];
+
+  for (const image of images) {
+    const result = await uploadOnCloudinary(image.path);
+    uploadedImages.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  }
   const product = await Product.create({
     productName,
     ingredients,
@@ -49,7 +59,7 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 const removeProduct = asyncHandler(async (req, res) => {
-  if (!req.user.role === "admin" || req.user.role !== "manager") {
+  if (!req.user.role === "admin" || req.user.role === "manager") {
     res.status(401);
     throw new Error("Not authorized");
   }
