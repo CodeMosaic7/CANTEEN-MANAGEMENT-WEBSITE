@@ -2,8 +2,15 @@ import { Product } from "../models/product.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 const addProduct = asyncHandler(async (req, res) => {
-  if (req.user.role === "admin" || req.user.role === "manager") {
+  // checks if user is logged in
+  // if user is logged in, check if user is admin or manager
+  if (!req.user) {
     res.status(401);
+    throw new Error("Not authorized");
+  }
+  const allowedRoles = ["admin", "manager"];
+  if (!allowedRoles.includes(req.user.role)) {
+    res.status(403);
     throw new Error("Not authorized");
   }
   const {
@@ -12,9 +19,11 @@ const addProduct = asyncHandler(async (req, res) => {
     price,
     category,
     availabilitystatus,
-    images,
+
     description,
   } = req.body;
+
+  const images = req.files;
   if (
     !productName ||
     !ingredients ||
@@ -33,17 +42,18 @@ const addProduct = asyncHandler(async (req, res) => {
   for (const image of images) {
     const result = await uploadOnCloudinary(image.path);
     uploadedImages.push({
-      public_id: result.public_id,
+      // public_id: result.public_id,
       url: result.secure_url,
     });
   }
+  console.log(uploadedImages);
   const product = await Product.create({
     productName,
     ingredients,
     price,
     category,
     availabilitystatus,
-    images,
+    uploadedImages,
     description,
   });
 });
