@@ -40,11 +40,15 @@ const addProduct = asyncHandler(async (req, res) => {
   const uploadedImages = [];
 
   for (const image of images) {
-    const result = await uploadOnCloudinary(image.path);
-    uploadedImages.push({
-      // public_id: result.public_id,
-      url: result.secure_url,
-    });
+    try {
+      const result = await uploadOnCloudinary(image.path);
+      console.log(result);
+      uploadedImages.push(result.url);
+    } catch (error) {
+      console.error("Failed to upload image:", image.originalname, error);
+      res.status(500);
+      throw new Error("Failed to upload image to Cloudinary");
+    }
   }
   console.log(uploadedImages);
   const product = await Product.create({
@@ -53,8 +57,13 @@ const addProduct = asyncHandler(async (req, res) => {
     price,
     category,
     availabilitystatus,
-    uploadedImages,
+    images: uploadedImages,
     description,
+  });
+  res.status(201).json({
+    success: true,
+    message: "Product added successfully",
+    product,
   });
 });
 
