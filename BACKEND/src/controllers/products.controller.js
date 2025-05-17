@@ -68,17 +68,29 @@ const addProduct = asyncHandler(async (req, res) => {
 });
 
 const getProducts = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (!product) {
-    res.status(404);
-    throw new Error("Product not found");
+  // Check if user is logged in
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
   }
 
-  res.status(200).json(product);
+  // Fetch all products
+  const products = await Product.find();
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    products,
+  });
 });
 
 const removeProduct = asyncHandler(async (req, res) => {
-  if (!req.user.role === "admin" || req.user.role === "manager") {
+  //extra check
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  if (!req.user.role === "admin" || !req.user.role === "manager") {
     res.status(401);
     throw new Error("Not authorized");
   }

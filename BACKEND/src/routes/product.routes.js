@@ -20,6 +20,6 @@ router
 router.route("/getProducts").post(verifyJWT, getProducts);
 router
   .route("/removeProduct/:id")
-  .delete(verifyJWT, authorizeRoles("admin", "manager"), removeProduct);
+  .post(verifyJWT, authorizeRoles("admin", "manager"), removeProduct);
 
 export default router;
