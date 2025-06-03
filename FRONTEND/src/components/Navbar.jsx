@@ -1,13 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Register from "../pages/Register";
+
+// Logout
+// const logout = () => {};
+
 export default function Navbar() {
   const navi = useNavigate();
   const [register, setRegister] = useState(true);
+  const userName = JSON.parse(localStorage.getItem("user")); // ✅ parse stringified name
+  const isLoggedIn = !!userName;
   function onSubmit(e) {
     e.preventDefault();
     alert("Search submitted!");
   }
+
   function handleRegister() {
     if (register) {
       navi("../login");
@@ -33,6 +39,14 @@ export default function Navbar() {
         <button className="text-lg">
           <i className="fas fa-shopping-cart"></i>
         </button>
+
+        {/* ✅ Greeting text */}
+        {userName && (
+          <span className="text-sm font-medium text-white">
+            Hi, {userName} 👋
+          </span>
+        )}
+
         <button className="text-sm" onClick={handleRegister}>
           {register ? "Log In" : "Sign Up"}
         </button>

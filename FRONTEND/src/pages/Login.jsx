@@ -30,6 +30,16 @@ const Login = () => {
       if (response.status === 200) {
         setError(""); // Clear error if login is successful
         navigate("/"); // Redirect to the dashboard or home page after successful login
+        console.log("response", response);
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.message.user.name)
+        ); // Store user data in local storage
+        localStorage.setItem("accessToken", response.data.message.accessToken);
+        localStorage.setItem(
+          "refreshToken",
+          response.data.message.refreshToken
+        ); // Store token in local storage
       } else {
         setError("Invalid credentials, please try again.");
       }

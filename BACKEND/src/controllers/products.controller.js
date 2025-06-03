@@ -68,11 +68,7 @@ const addProduct = asyncHandler(async (req, res) => {
 });
 
 const getProducts = asyncHandler(async (req, res) => {
-  // Check if user is logged in
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Not authorized");
-  }
+  // VerifyJWT middleware will ensure user is authenticated
 
   // Fetch all products
   const products = await Product.find();

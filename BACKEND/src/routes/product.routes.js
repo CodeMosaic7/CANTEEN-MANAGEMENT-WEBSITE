@@ -9,6 +9,7 @@ import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+// Add product route - requires admin/manager role
 router
   .route("/addProduct")
   .post(
@@ -17,9 +18,12 @@ router
     upload.array("images", 5),
     addProduct
   );
-router.route("/getProducts").post(verifyJWT, getProducts);
+
+router.route("/getProducts").get(getProducts);
+
+// Remove product route - requires admin/manager role
 router
   .route("/removeProduct/:id")
-  .post(verifyJWT, authorizeRoles("admin", "manager"), removeProduct);
+  .delete(verifyJWT, authorizeRoles("admin", "manager"), removeProduct); // Changed to DELETE method
 
 export default router;

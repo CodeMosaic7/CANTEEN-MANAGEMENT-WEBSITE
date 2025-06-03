@@ -6,8 +6,11 @@ import Support from "./pages/Support";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import axios from "axios";
+axios.defaults.withCredentials = true; // Ensure cookies are sent with requests
+axios.defaults.baseURL = "http://localhost:8000/api/v1"; // Set base URL for API requests
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
   return (
     <>
       <Routes>
@@ -17,12 +20,12 @@ function App() {
         <Route path="/support" element={<Support />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route
+        {/* <Route
           path="/dashboard"
           element={
             user ? <Dashboard role={user.role} /> : <Navigate to="/login" />
           }
-        />
+        /> */}
       </Routes>
     </>
   );
