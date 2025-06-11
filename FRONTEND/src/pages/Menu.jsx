@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import Foodcard from "../components/Foodcard";
 import Navbar from "../components/Navbar";
-import axios from "axios";
 import Footer from "../components/Footer";
-
-// Configure axios defaults
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:8000";
+import { getAllProducts } from "../api";
 
 export default function Menu() {
   const [foodItems, setFoodItems] = useState([]);
@@ -46,27 +42,32 @@ export default function Menu() {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get("products/getProducts", {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        // response from the API
+        const response = await getAllProducts();
+        console.log("Response from API:", response);
+        // const data =
+        //   response?.data?.data ||
+        //   response?.data.products ||
+        //   response.data ||
+        //   [];
+        // const items = Array.isArray(data) ? data : [];
+        const items = response?.products || [];
 
-        const data =
-          response.data.data || response.data.products || response.data;
-        const items = Array.isArray(data) ? data : [];
+        if (!Array.isArray(items)) {
+          console.error("Products is not an array:", items);
+          throw new Error("Invalid data format received from API");
+        }
         setFoodItems(items);
         setFilteredItems(items);
 
         // Set initial price range based on data
         if (items.length > 0) {
+          const productnames = items.map((item) => item.name || "Unknown");
           const prices = items.map((item) => item.price || 0);
           setPriceRange([Math.min(...prices), Math.max(...prices)]);
         }
 
-        console.log("Food items fetched:", data);
+        // console.log("Food items fetched:", data);
       } catch (error) {
         console.error("Error fetching food items:", error);
         setError(

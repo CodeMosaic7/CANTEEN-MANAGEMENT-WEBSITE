@@ -109,7 +109,7 @@ export default function Hero() {
       </div>
 
       {/* Scroll Down Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70">
         <div className="flex flex-col items-center animate-bounce">
           <span className="text-sm mb-2">Explore Menu</span>
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

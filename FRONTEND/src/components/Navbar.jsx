@@ -4,10 +4,11 @@ import { useState, useRef, useEffect } from "react";
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  console.log("Current Path:", location.pathname);
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [cartCount] = useState(3); // Mock cart count
+  const [cartCount] = useState(1); // Mock cart count
 
   const dropdownRef = useRef(null);
   const userName = JSON.parse(localStorage.getItem("user"));
@@ -63,7 +64,7 @@ export default function Navbar() {
             🍕
           </div>
           <span className="text-xl font-bold text-gray-800 hidden sm:block">
-            FoodieApp
+            Food-Good
           </span>
         </Link>
 
@@ -162,7 +163,7 @@ export default function Navbar() {
               {showUserDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
                   <Link
-                    to="/profile"
+                    to="/dashboard"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     <span className="flex items-center">👤 Profile</span>
