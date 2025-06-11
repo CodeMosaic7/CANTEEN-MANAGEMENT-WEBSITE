@@ -45,9 +45,6 @@ export default function Navbar() {
     { path: "/menu", label: "Menu", icon: "🍽️" },
     { path: "/orders", label: "Orders", icon: "📋" },
     { path: "/support", label: "Support", icon: "💬" },
-    ...(isLoggedIn
-      ? [{ path: "/dashboard", label: "Dashboard", icon: "📊" }]
-      : []),
   ];
 
   const isActivePath = (path) => {
