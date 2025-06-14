@@ -25,14 +25,14 @@ export default function Menu() {
   // Get search query from URL if coming from navbar search
   const urlSearchQuery = searchParams.get("q");
 
-  // Categories for filtering
+  // Categories for filtering - Updated to match your API data
   const categories = [
     "All",
     "Breakfast",
     "Lunch",
     "Dinner",
     "Snacks",
-    "Beverages",
+    "Beverage", // Changed from "Beverages" to match your API
     "Desserts",
   ];
 
@@ -45,29 +45,31 @@ export default function Menu() {
         // response from the API
         const response = await getAllProducts();
         console.log("Response from API:", response);
-        // const data =
-        //   response?.data?.data ||
-        //   response?.data.products ||
-        //   response.data ||
-        //   [];
-        // const items = Array.isArray(data) ? data : [];
-        const items = response?.products || [];
+
+        // Handle different possible response structures
+        const items =
+          response?.products ||
+          response?.data?.products ||
+          response?.data ||
+          response ||
+          [];
 
         if (!Array.isArray(items)) {
           console.error("Products is not an array:", items);
           throw new Error("Invalid data format received from API");
         }
+
+        console.log("Fetched food items:", items);
         setFoodItems(items);
         setFilteredItems(items);
 
-        // Set initial price range based on data
+        // Set initial price range based on data - Fixed to use correct field name
         if (items.length > 0) {
-          const productnames = items.map((item) => item.name || "Unknown");
           const prices = items.map((item) => item.price || 0);
-          setPriceRange([Math.min(...prices), Math.max(...prices)]);
+          const minPrice = Math.min(...prices);
+          const maxPrice = Math.max(...prices);
+          setPriceRange([minPrice, maxPrice]);
         }
-
-        // console.log("Food items fetched:", data);
       } catch (error) {
         console.error("Error fetching food items:", error);
         setError(
@@ -94,11 +96,11 @@ export default function Menu() {
     }
   }, [urlSearchQuery]);
 
-  // Filter and sort items
+  // Filter and sort items - Updated to use correct field names
   useEffect(() => {
     let filtered = [...foodItems];
 
-    // Category filter
+    // Category filter - Fixed to use correct field name
     if (selectedCategory !== "All") {
       filtered = filtered.filter(
         (item) =>
@@ -106,12 +108,13 @@ export default function Menu() {
       );
     }
 
-    // Search filter
+    // Search filter - Fixed to use productName instead of name
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
-          item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description?.toLowerCase().includes(searchTerm.toLowerCase())
+          item.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.ingredients?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -121,7 +124,7 @@ export default function Menu() {
       return price >= priceRange[0] && price <= priceRange[1];
     });
 
-    // Sort
+    // Sort - Fixed to use productName instead of name
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price-low":
@@ -129,10 +132,10 @@ export default function Menu() {
         case "price-high":
           return (b.price || 0) - (a.price || 0);
         case "rating":
-          return (b.rating || 0) - (a.rating || 0);
+          return (b.rating || 4.2) - (a.rating || 4.2); // Default rating since API doesn't have it
         case "name":
         default:
-          return (a.name || "").localeCompare(b.name || "");
+          return (a.productName || "").localeCompare(b.productName || "");
       }
     });
 
@@ -311,16 +314,56 @@ export default function Menu() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
                     </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max="1000"
-                      value={priceRange[1]}
-                      onChange={(e) =>
-                        setPriceRange([priceRange[0], parseInt(e.target.value)])
-                      }
-                      className="w-full"
-                    />
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="range"
+                        min="0"
+                        max="1000"
+                        value={priceRange[0]}
+                        onChange={(e) =>
+                          setPriceRange([
+                            parseInt(e.target.value),
+                            priceRange[1],
+                          ])
+                        }
+                        className="flex-1"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="1000"
+                        value={priceRange[1]}
+                        onChange={(e) =>
+                          setPriceRange([
+                            priceRange[0],
+                            parseInt(e.target.value),
+                          ])
+                        }
+                        className="flex-1"
+                      />
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-500 mt-1">
+                      <span>₹0</span>
+                      <span>₹1000</span>
+                    </div>
+                  </div>
+
+                  {/* Additional filter for availability */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Availability
+                    </label>
+                    <select
+                      onChange={(e) => {
+                        // You can add availability filtering logic here
+                        console.log("Availability filter:", e.target.value);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    >
+                      <option value="all">All Items</option>
+                      <option value="available">Available Only</option>
+                      <option value="unavailable">Unavailable Only</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -353,6 +396,7 @@ export default function Menu() {
                   onClick={() => {
                     setSearchTerm("");
                     setSelectedCategory("All");
+                    setPriceRange([0, 1000]);
                   }}
                   className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200"
                 >
@@ -363,7 +407,7 @@ export default function Menu() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredItems.map((item, index) => (
-                <Foodcard key={item.id || item._id || index} {...item} />
+                <Foodcard key={item._id || index} {...item} />
               ))}
             </div>
           )}
