@@ -16,6 +16,11 @@ const cartItemSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  specialInstructions: {
+    type: String,
+    required: false,
+    maxlength: 500,
+  },
 });
 
 const cartSchema = new mongoose.Schema(
@@ -26,10 +31,32 @@ const cartSchema = new mongoose.Schema(
       required: true,
     },
     items: [cartItemSchema],
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
     totalPrice: {
       type: Number,
       required: true,
       min: 0,
+    },
+    deliveryFee: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    status: {
+      type: String,
+      enum: ["active", "completed", "cancelled"],
+      default: "active",
+    },
+    deliveryAddress: {
+      street: String,
+      city: String,
+      state: String,
+      zipCode: String,
+      country: String,
     },
   },
   {
@@ -43,5 +70,8 @@ cartSchema.pre("save", function (next) {
   }, 0);
   next();
 });
+
+cartSchema.index({ user: 1, status: 1 });
+cartSchema.index({ restaurant: 1 });
 
 export const Cart = mongoose.model("Cart", cartSchema);
